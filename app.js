@@ -1,9 +1,11 @@
 const express = require('express')
+const cors = require('cors')
 const path = require('path')
 const stocks = require('./stocks')
 
 const app = express()
 app.use(express.static(path.join(__dirname, 'static')))
+app.use(cors())
 
 app.get('/stocks', async (req, res) => {
   const stockSymbols = await stocks.getStocks()
@@ -16,4 +18,4 @@ app.get('/stocks/:symbol', async (req, res) => {
   res.send(data)
 })
 
-app.listen(3000, () => console.log('Server is running!'))
+app.listen(5500, () => console.log('Server is running!'))

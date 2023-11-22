@@ -17,6 +17,58 @@ function drawTriangle (apex1, apex2, apex3) {
   ctx.fill()
 }
 
+function fetchAvailableStocks() {
+  fetch('http://localhost:5500/stocks')
+    .then(response => response.json())
+    .then(data => {
+      console.log('Available stocks:', data.stockSymbols)
+    })
+    .catch(error => {
+      console.error('Error fetching stocks:', error)
+    })
+}
+
+function fetchStockData() {
+  const spinner = document.querySelector('.spinner')
+
+  fetch('http://localhost:5500/stocks')
+    .then(response => response.json())
+    .then(data => {
+      const stockSymbols = data.stockSymbols
+
+      const promises = stockSymbols.map((stockSymbol, index) =>
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            fetch(`http://localhost:5500/stocks/${stockSymbol}`)
+              .then(response => response.json())
+              .then(stockData => {
+                console.log(`Details for ${stockSymbol}:`, stockData)
+                resolve()
+              })
+              .catch(error => {
+                console.error(`Error fetching details for ${stockSymbol}:`, error)
+                reject(error)
+              })
+          }, index * 100)
+        })
+      )
+
+      Promise.allSettled(promises)
+        .then(() => {
+          spinner.style.display = 'none'
+        })
+        .catch(error => {
+          console.error('Error fetching stocks:', error)
+        })
+    })
+    .catch(error => {
+      console.error('Error fetching stocks:', error)
+    })
+}
+
+fetchAvailableStocks()
+fetchStockData()
+
 drawLine([50, 50], [50, 550])
 drawTriangle([35, 50], [65, 50], [50, 35])
 

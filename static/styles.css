@@ -1,8 +1,20 @@
 .spinner{
   font-size: 140px;
+  display: block;
 }
-.spinner:after {
+.spinner::after {
   content: '◌';
+  display: inline-block;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg); /* Start rotation from 0 degrees */
+  }
+  100% {
+    transform: rotate(360deg); /* Rotate to 360 degrees */
+  }
 }
 
 #chart {
